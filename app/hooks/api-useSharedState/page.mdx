@@ -1,0 +1,55 @@
+# useSharedState
+
+The `useSharedState` hook is the heart of Overwatch. It allows you to **read** and **update** your shared **singleton**, globally accessible state with **Reactivity**, **Immutability**, and **Middleware Support** out of the box.
+
+---
+
+## When to Use
+
+-  Use this hook in any component to **read** and **update** your shared state across components or routes.
+- You want to share state across components or routes
+- You want to enforce immutability while retaining flexibility
+- You want middleware execution for logging, analytics, etc.
+- You want to use middleware specific to components.
+
+---
+
+## Syntax
+
+```ts
+const [theme, setTheme] = useSharedState(initializer, options?);
+````
+
+> initializer (name of the state created using createSharedState or batchCreateSharedStates)
+
+
+## Example: Basic Counter
+
+```ts
+const [count, setCounter] = useSharedState('counter')
+return <button onClick={() => setCounter(count+1)}>Count: {count}</button>
+```
+---
+
+## Parameters
+
+| Name          | Type                            | Description                                                                            |
+| ------------- | ------------------------------- | -------------------------------------------------------------------------------------- |
+| initializer | name of the state | State created using createSharedState or batchCreateSharedStates
+| options     | `middleware?`           | Optional.  Array of scoped middlewares |  
+| options     | `store?`           | Optional. overiding the existing store should be of type store.                    |
+
+
+## Scoped Middleware
+
+Middleware provided through useSharedState runs only in that specific component instance — allowing per-component logic such as logging or access control.
+```ts
+const logger = (val, next) => {
+      console.log("Only runs in THIS component:", val);
+      next(val);
+}
+useSharedState('counter', {
+  middleware: [logger]
+});
+```
+> Middleware functions are called before the state updates. You can pass multiple middlewares, they'll be composed in order.

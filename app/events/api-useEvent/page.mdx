@@ -1,0 +1,74 @@
+# useEvent
+
+The `useEvent` hook lets your React components **subscribe to custom events** emitted within your application using Overwatch’s **lightweight pub-sub system**.
+
+It enables **decoupled, event-driven communication** between components and modules without relying on props drilling or global state for transient events.
+
+---
+
+## When to Use
+
+- You need to **listen for custom events** triggered elsewhere in your app.
+- You want a **clean way to handle cross-component communication**.
+- You need an alternative to context for **one-off or transient event handling**.
+- You’re building **notifications, global keyboard shortcuts, or event-driven workflows**.
+
+---
+
+## Syntax
+
+```ts
+useEvent<T>(
+  eventName: string,
+  handler: (payload: T) => void
+)
+````
+
+---
+
+## Parameters
+
+| Parameter   | Type                   | Description                                                                                   |
+| ----------- | ---------------------- | --------------------------------------------------------------------------------------------- |
+| eventName | `string`               | The name/key of the event to subscribe to.                                                    |
+| handler   | `(payload: T) => void` | The callback function that executes when the event is triggered, receiving the event payload. |
+
+---
+
+## Example: Basic Usage
+
+In a component, **listen for this event**:
+
+```ts
+useEvent<{ message: string }>('notification', (payload) => {
+  console.log(payload.message); // "overwatch data"
+})
+```
+> payload : It can be `string`, `Array`, `object`, `boolean` or any other type of data.
+
+In one part of your app, you **broadcast an event**:
+
+```ts
+import { useBroadcast } from 'overwatch-ts'
+
+useBroadcast('notification', { message: 'overwatch data' })
+```
+Learn more about this in **useBroadcast**
+
+---
+
+## Why useEvent?
+
+- Lightweight and decoupled communication
+- No prop drilling or global state needed for transient events
+- Easy to clean up automatically on component unmount
+---
+
+## How It Works
+
+Internally, useEvent:
+
+* Subscribes to the specified event name on mount.
+* Automatically unsubscribes on component unmount.
+* Invokes your handler only when the relevant event is broadcasted using Overwatch’s internal `pubsub`.
+

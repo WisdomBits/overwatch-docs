@@ -1,0 +1,97 @@
+# useBroadcast
+
+The `useBroadcast` hook allows your React components to **emit custom events** within your application using Overwatch’s **lightweight pub-sub system**.
+
+It pairs seamlessly with [`useEvent`](/hooks/use-event) for **clean, decoupled, event-driven architecture** across your React and Next.js apps.
+
+---
+
+## When to Use
+
+- You want to **trigger custom events** from a component or module.
+- You need **component-to-component communication** without prop drilling.
+- You are building workflows like notifications, keyboard shortcuts, or transient event flows.
+- You want **clean, testable, decoupled logic** for emitting events.
+
+---
+
+## Syntax
+
+```ts
+const broadcast = useBroadcast<T>(eventName: string)
+````
+
+---
+
+## Parameters
+
+| Parameter   | Type     | Description                        |
+| ----------- | -------- | ---------------------------------- |
+| eventName | `string` | The key/name of the event to emit. |
+
+---
+
+## Example: Basic Usage
+
+In one component:
+
+```ts
+const broadcastNotification = useBroadcast<{ message: string }>('notification')
+
+const handleClick = () => {
+  broadcastNotification({ message: 'New Notification' })
+}
+```
+
+In another component:
+
+```ts
+useEvent<{ message: string }>('notification', (payload) => {
+  console.log(payload.message) // "New Notification"
+})
+```
+
+---
+
+## Example: Triggering Events on User Actions
+
+```ts
+const broadcastShortcut = useBroadcast<string>('keydown')
+
+const handleKeyDown = (e: KeyboardEvent) => {
+  broadcastShortcut(e.key)
+}
+
+useEffect(() => {
+  window.addEventListener('keydown', handleKeyDown)
+  return () => window.removeEventListener('keydown', handleKeyDown)
+}, [])
+```
+
+In another component:
+
+```ts
+useEvent('keydown', (key) => {
+  if (key === 'Escape') {
+    closeModal()
+  }
+})
+```
+
+---
+
+## Why useBroadcast?
+
+- Decouples component communication
+- Lightweight and minimal
+- Pairs with `useEvent` seamlessly
+- Useful for advanced workflows like command palettes or ephemeral event handling
+
+---
+
+## How It Works
+
+* Creates a stable `broadcast` function scoped to your `eventName`.
+* Uses Overwatch’s internal `pubsub` system to notify all `useEvent` subscribers when called.
+* Events are handled instantly and efficiently.
+

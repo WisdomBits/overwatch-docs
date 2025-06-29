@@ -7,13 +7,13 @@ const withNextra = nextra({
  
 // Export the final Next.js config with Nextra included
 export default withNextra({
-  // async redirects() {
-  //   return [
-  //     {
-  //       source : "/",
-  //       destination : "/resources",
-  //       permanent : true
-  //     }
-  //   ]
-  // }
+  async redirects() {
+    return [
+      {
+        source : "/",
+        destination : "/docs",
+        permanent : true
+      }
+    ]
+  }
 })

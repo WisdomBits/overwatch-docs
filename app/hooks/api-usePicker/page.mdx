@@ -1,0 +1,92 @@
+# usePicker
+
+The `usePicker` hook allows you to **subscribe to a specific slice of shared state**, reducing unnecessary re-renders by listening only to changes in the parts you care about.
+
+It is the **Overwatch equivalent of `useSelector` in Redux**, designed for **precision reactivity and performance** in React and Next.js apps.
+
+---
+
+## When to Use
+
+- You need to **get only a specific key of your shared state**.
+- You want to **minimize re-renders** and optimize your components.
+- You are building lists, dashboards, or heavy UI trees where only partial state changes should trigger updates.
+
+---
+
+## Syntax
+
+```ts
+const selected = usePicker<T, S>(
+  key,
+  selector,
+  equalityFn?, 
+  options?
+)
+````
+
+---
+
+## Parameters
+
+| Parameter       | Type                      | Description                                                                                                                                     |
+| --------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| key           | `string`                  | The key of the shared state created with `createSharedState` or `batchCreateSharedStates`.                                                      |
+| selector      | `(state: T) => S`         | Function to select a part of the state you want to subscribe to.                                                                                |
+| equalityFn    | `(a: S, b: S) => boolean` | Optional. Comparison function to determine equality and skip updates if the selected state hasn't changed. Defaults to strict equality (`===`). |
+| options.store | `ServerStore`             | Optional. Used for SSR or custom stores.                                                                                                        |
+
+---
+
+## Example: Picking Specific State
+
+Suppose you have a global `user` state:
+
+```ts
+createSharedState({
+  name: 'Karan',
+  age: 25,
+  email: 'Karandeepsingh@overwatch.info'
+}))
+```
+
+To subscribe **only to the user's name**:
+
+```ts
+const userName = usePicker('user', (state) => state.name)
+```
+
+Your component will now **only re-render when `state.name` changes**.
+
+---
+
+## Example with Custom Equality Function
+
+If you want to subscribe to a nested object or use a custom comparison:
+
+```ts
+const userProfile = usePicker(
+  'user',
+  (state) => ({ name: state.name, email: state.email }),
+  (a, b) => a.name === b.name && a.email === b.email
+)
+```
+
+---
+
+## Advanced: Using with SSR
+
+If you are using Overwatch with SSR and `ServerStore`, you can pass your store explicitly:
+
+```ts
+const selected = usePicker('user', selectorFn, comparisionFn?, { store: serverStore })
+```
+
+---
+
+## Internal Implementation (How it Works)
+
+* **Uses React state** to hold the selected slice of your shared state.
+* Subscribes to the shared state using Overwatch’s `pubsub`.
+* Uses `equalityFn` to determine if the selected value has changed before triggering a re-render.
+

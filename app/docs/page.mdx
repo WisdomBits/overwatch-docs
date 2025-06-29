@@ -1,0 +1,83 @@
+# Overwatch — A Lightweight Sensible State Manager
+![Alt text](https://ucarecdn.com/e22cf47b-ada8-420a-8345-745c2e3c53e9/overwatch1.png "overwatch")
+[![Build Size](https://img.shields.io/bundlephobia/minzip/overwatch-ts?label=bundle%20size&style=flat&colorA=000000&colorB=000000)](https://bundlephobia.com/result?p=overwatch-ts)
+
+
+A minimal API with developer flexibility, TypeScript-first state-management solution, inspired by the simplicity of **Zustand**, It's a super lightweight yet expressive **state management library for React Js & Next Js**, built on the **singleton design pattern**. It offers support for **global and instance-specific middlewares**, **immutability**, **batched updates**, and **custom event communication** — all designed to be used without extensive boilerplate.
+
+Goal with OverWatch was to prioritize reusability, a positive developer experience, and clear component-level state and event tracking.
+
+*Stable Version - [![Version](https://img.shields.io/npm/v/overwatch-ts?style=flat&colorA=000000&colorB=000000)](https://www.npmjs.com/package/overwatch-ts)*
+
+> OverWatch evolved from an internal utility that leveraged the singleton and pub-sub patterns. We've now refined it for React, incorporating hooks, strong typing, and automatic cleanup to make it accessible to everyone.
+
+## Use Overwatch in 3 Steps
+
+
+### Installation
+
+```bash
+npm install overwatch-ts
+````
+
+or with yarn:
+
+```bash
+yarn add overwatch-ts
+```
+
+---
+
+### Step 1: createSharedState(key, initialValue)
+
+This function initializes a shared state value globally. While **optional**, it's helpful for establishing a default state before any component mounts.
+
+> If `createSharedState` isn't used, `useSharedState` will automatically create the key the first time it's accessed, providing a flexible starting point.
+
+```ts
+// Setting an initial theme
+createSharedState('theme', { mode: 'dark' });
+```
+---
+
+### Step 2: useSharedState(key)
+
+> Use this hook in any component to **read** and **update** your shared state. It's your primary interface for interacting with OverWatch.
+
+```ts
+import { useSharedState } from 'overwatch-ts'; 
+
+const ThemeSwitcher = () => {
+  const [theme, setTheme] = useSharedState<{ mode: string }>('theme');
+
+  const toggleTheme = () => {
+    setTheme({ mode: theme.mode === 'dark' ? 'light' : 'dark' });
+  };
+
+  return (
+    <button onClick={toggleTheme}>
+      Switch to {theme.mode === 'dark' ? 'Light' : 'Dark'} Mode
+    </button>
+  );
+};
+```
+
+---
+
+### Step 3: usePicker(key, selectorFn)
+
+> This hook allows you to extract only a specific part of a shared state object, which can help optimize component rendering by preventing unnecessary re-renders.
+
+```ts
+import { usePicker } from 'overwatch-ts'; 
+
+const ThemeIndicator = () => {
+  const mode = usePicker('theme', t => t.mode);
+
+  return <div>{mode === 'dark' ? '🌑' : '☀️'}</div>;
+};
+```
+**Why and when to use?**
+
+* It helps prevent unnecessary re-renders, improving application performance.
+* It's particularly useful for larger state objects where you only need to react to changes in one specific field.
