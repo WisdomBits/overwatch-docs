@@ -82,11 +82,3 @@ If you are using Overwatch with SSR and `ServerStore`, you can pass your store e
 const selected = usePicker('user', selectorFn, comparisionFn?, { store: serverStore })
 ```
 
----
-
-## Internal Implementation (How it Works)
-
-* **Uses React state** to hold the selected slice of your shared state.
-* Subscribes to the shared state using Overwatch’s `pubsub`.
-* Uses `equalityFn` to determine if the selected value has changed before triggering a re-render.
-

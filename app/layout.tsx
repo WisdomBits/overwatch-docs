@@ -21,7 +21,7 @@ const navbar = (
     // ... Your additional navbar options
   />
 )
-const footer = <Footer>MIT {new Date().getFullYear()} © Overwatch</Footer>
+const footer = <Footer style={{display: "flex", alignItems: "center", gap: "0.5rem"}}> {new Date().getFullYear()} {`© Overwatch `} <p style={{fontSize: "10px"}} >{`- Developed by a dev for Developers `}<a href='https://github.com/karandeepsingh7070' target="_blank">Karandeep Singh</a></p></Footer>
  
 export default async function RootLayout({ children } : {
   children : React.ReactNode

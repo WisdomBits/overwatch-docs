@@ -1,0 +1,74 @@
+# createSharedState
+
+The `createSharedState` API is the **core primitive** in Overwatch for creating **globally shared, reactive, immutable state containers** with middleware support and batched updates.
+
+The API creates a **globally shared, reactive state container** in Overwatch, allowing **all components to access and modify the same piece of state** across your app.
+
+---
+
+## When to Use
+
+- You need **global state shared across components/routes**.
+- You want **middleware support** for logging, validation, or analytics.
+- **Persistence** using `localStorage` or `sessionStorage`  
+- **SSR hydration** with optional `ServerStore`  
+
+---
+
+## Syntax
+
+```ts
+createSharedState<T>(
+  key: string,
+  initialValue: T,
+  options?: {
+    store?: ServerStore,
+    persist?: 'localStorage' | 'sessionStorage'
+  }
+)
+````
+
+---
+
+## Parameters
+
+| Parameter         | Type                                            | Description                                                    |
+| ----------------- | ----------------------------------------------- | -------------------------------------------------------------- |
+| key             | `string`                                        | Unique identifier for the shared state.                        |
+| initialValue    | `T`                                             | The initial value of your state.                               |
+| options.store   | `ServerStore`                       | Optional. Custom store instance for SSR or advanced scenarios.           |
+| options.persist | `'localStorage' \| 'sessionStorage'` | Optional. Enable persistence across reloads using local/session storage. |
+
+---
+
+## Example: Creating a Counter Store
+
+```ts
+createSharedState('counter', 0)
+```
+
+Use it in your components with [`useSharedState`](/hooks/use-shared-state):
+
+```tsx
+const [count, setCount] = useSharedState('counter')
+
+return (
+  <button onClick={() => setCount(count + 1)}>
+    Count: {count}
+  </button>
+)
+```
+
+---
+
+## With Persistence
+
+Persist your state across reloads using `localStorage`:
+
+```ts
+createSharedState('theme', 'light', { persist: 'localStorage' })
+```
+
+The value will persist across browser reloads, providing a consistent user experience.
+
+

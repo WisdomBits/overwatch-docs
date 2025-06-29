@@ -1,0 +1,96 @@
+# Middleware
+
+Overwatch supports **middleware** to enhance your state management with:
+
+- Server Calls
+- Logging  
+- Analytics  
+- Validation  
+- Debugging
+
+Middleware allows you to **intercept and control state updates** cleanly while maintaining Overwatch’s lightweight, boilerplate-free experience.
+
+---
+
+## Types of Middleware
+
+Overwatch supports:
+
+- **Global Middleware** – Applies to updates on a specific key globally.  
+- **Local Middleware** – Applies to specific `useSharedState` instances locally within components.
+
+---
+
+## ① Global Middleware
+
+### When to Use
+- Track updates globally for a specific key.
+- Enforce validation rules on specific state keys.
+- Add analytics tracking or logging for a key across the app.
+
+---
+
+#### Example: Global Logger
+
+```ts
+const logger = (value, next) => {
+  console.log("[Global Middleware]", value);
+  next(value);
+};
+
+applyMiddleware("counter", logger);
+```
+
+> Now, **any update to the `counter` state** will pass through the logger, regardless of which component triggers it.
+
+---
+
+## ② Local Middleware
+
+### When to Use
+
+* Debug or transform updates in a **specific component**.
+* Apply **validation or logging locally** without affecting other parts of the app.
+* Enforce rules or behaviors for a single instance of state usage.
+
+---
+
+### Usage with useSharedState
+
+Local middleware is handled directly within `useSharedState`:
+
+```ts
+const localLogger = (value, next) => {
+  console.log("[Local Middleware]", value);
+  next(value);
+};
+
+const [count, setCount] = useSharedState("counter", {
+  middleware: [localLogger]
+});
+```
+
+> Only **this component’s updates to `counter`** will pass through `localLogger`, ensuring scoped debugging or transformations.
+
+---
+
+## Middleware Signature Recap
+
+### Global Middleware
+
+```ts
+(value: T, next: (v: T) => void) => void
+```
+
+* `value`: The new value being set.
+* `next(value)`: Pass control to the next middleware or finalize the update.
+
+---
+
+### Local Middleware
+
+Same as global:
+
+```ts
+(value: T, next: (v: T) => void) => void
+```

@@ -1,0 +1,81 @@
+# createServerStore
+
+The `createServerStore` API in Overwatch allows you to **create an isolated, server-specific store instance** for **Server-Side Rendering (SSR)** and **testing environments**.
+
+---
+
+## When to Use
+
+- You need **per-request isolated state on the server during SSR** to avoid leaking state between users.
+- You want to **hydrate Overwatch state on the client** seamlessly.
+- You need **unit or integration testing with isolated store instances**.
+- You are building Next.js apps requiring clean SSR with shared state.
+
+---
+
+## Syntax
+
+```ts
+const serverStore = createServerStore()
+````
+
+---
+
+## Returned Methods
+
+The `serverStore` object includes:
+
+| Method              | Description                                                               |
+| ------------------- | ------------------------------------------------------------------------- |
+| get(key)          | Retrieve the current value for a key.                                     |
+| set(key, value)   | Set the value for a key in the store.                                     |
+| getSnapshot()     | Get the entire current state object.                                      |
+| hydrate(snapshot) | Hydrate the store with a provided snapshot (e.g., from server to client). |
+
+---
+
+## Step-by-Step Guide
+
+### Example: Using with SSR in Next.js
+
+### ① Create and Populate the Server Store in `getServerSideProps`:
+
+```ts
+import { createServerStore, createSharedState } from 'overwatch-ts'
+
+export async function getServerSideProps() {
+  const serverStore = createServerStore()
+
+  // Initialize shared states with this server store
+  createSharedState('counter', 10, { store: serverStore })
+
+  // You can pre-populate additional data:
+  serverStore.set('theme', 'dark')
+
+  return {
+    props: {
+      snapshot: serverStore.getSnapshot(),
+    }
+  }
+}
+
+```
+
+---
+
+### ② Hydrate Overwatch using the snapshot 
+
+```ts
+export default function Home({ snapshot }) {
+  console.log(snapshot, "snapshot from server");
+  return (
+    <main>
+    //Wrap your Client entry point component inside Hydrate
+      <Hydrated snapshot={snapshot}>
+      <ToogleTheme initialSnapshot={snapshot} /> // client Component
+      </Hydrated>
+    </main>
+  );
+}
+```
+That's It!

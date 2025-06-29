@@ -1,0 +1,59 @@
+# Hydrated API
+
+The `Hydrated` pattern in Overwatch ensures your app **waits for client-side hydration** of the server-passed snapshot before rendering your UI, preventing mismatches and ensuring **consistent SSR and CSR experiences**.
+
+It wraps your app or parts of your tree, allowing you to safely use Overwatch shared state immediately after hydration.
+
+---
+
+## When to Use
+
+- When using Overwatch with **Server-Side Rendering (SSR) in Next.js**.
+- To avoid UI flicker or hydration mismatches when accessing shared state.
+- To ensure **state is fully hydrated before rendering your components**.
+- To wrap layouts, pages, or specific parts of your app that require hydrated state.
+
+---
+
+## Example with Next.js
+
+```tsx
+// app/page.tsx
+import Hydrated from './Hydrated'
+import Counter from './Counter'
+
+export default function Page({ snapshot }) {
+  return (
+    <Hydrated snapshot={snapshot}>
+      <Counter /> // client component
+    </Hydrated>
+  )
+}
+```
+
+In your `Counter` component:
+
+```tsx
+"use client"
+
+import { useSharedState } from "overwatch-ts"
+
+export default function Counter() {
+  const [count, setCount] = useSharedState('counter')
+
+  return (
+    <button onClick={() => setCount(count + 1)}>
+      Count: {count}
+    </button>
+  )
+}
+```
+
+---
+
+## How It Works
+
+- `useHydratedStore(snapshot)` hydrates the client store with the server-passed snapshot.
+- It returns `true` when hydration completes, triggering a re-render with the state ready.
+- Until hydration is complete, your UI can render a skeleton or remain hidden to avoid mismatches.
+

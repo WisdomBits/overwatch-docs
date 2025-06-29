@@ -1,0 +1,86 @@
+# batchCreateSharedStates
+
+The `batchCreateSharedStates` API allows you to **create multiple shared, globally accessible state containers in a single call**.
+
+It is a **convenient way to initialize multiple pieces of shared state**, with support for:
+
+- **Persistence** via `localStorage` or `sessionStorage`  
+- **SSR hydration** using a `ServerStore`  
+
+---
+
+## When to Use
+
+- You need to **initialize multiple shared state keys simultaneously**.
+- You want **consistent persistence** across multiple state containers.
+- You want a **clean setup without repetitive calls to `createSharedState`.**
+
+---
+
+## Syntax
+
+```ts
+batchCreateSharedStates(
+  stateObj: Record<string, any>,
+  options?: {
+    store?: ServerStore,
+    persist?: 'localStorage' | 'sessionStorage'
+  }
+)
+````
+
+---
+
+## Parameters
+
+| Parameter         | Type                                            | Description                                                                                                               |
+| ----------------- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| stateObj        | `Record<string, any>`                           | An object with key-value pairs where each key is the state identifier and each value is the initial value for that state. |
+| options.store   | `ServerStore`                         | Optional. custom store for SSR hydration or advanced use.                                                                  |
+| options.persist | `'localStorage' \| 'sessionStorage'`  | Optional. persist all states in `stateObj` using the specified storage type.                                                        |
+
+---
+
+## Example: Creating Multiple Stores
+
+```ts
+batchCreateSharedStates({
+  counter: 0,
+  theme: 'light',
+  user: { name: 'Karan', loggedIn: false }
+})
+```
+
+You can now use these keys in your components with [`useSharedState`](/hooks/use-shared-state):
+
+```tsx
+const [count, setCount] = useSharedState('counter')
+const [theme, setTheme] = useSharedState('theme')
+const [user, setUser] = useSharedState('user')
+```
+
+---
+
+## With Persistence
+
+To persist all created states using `localStorage`:
+
+```ts
+batchCreateSharedStates({
+  counter: 0,
+  theme: 'light'
+}, { persist: 'localStorage' })
+```
+
+---
+
+## How It Works
+
+Internally, `batchCreateSharedStates` simply calls [`createSharedState`](/apis/create-shared-state) for each key-value pair in `stateObj`, passing the provided `options` for each call.
+
+This ensures:
+
+* Consistent initialization across all your stores.
+* Uniform persistence and SSR hydration configuration.
+* DRY (Don't Repeat Yourself) store setup.
+

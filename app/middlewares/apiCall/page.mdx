@@ -1,0 +1,106 @@
+# Using Async Middleware for API Calls
+
+Overwatch allows **async middleware**, enabling you to perform **API requests, transformations, and side effects** before updating your shared state.
+
+This pattern:
+- Keeps components clean.  
+- Centralizes fetch logic.  
+- Adds logging/validation around updates.  
+- Provides consistent, reusable data fetching across your app.
+
+---
+
+## Example: Fetch Users in Async Middleware
+
+---
+
+### ① Create Shared State
+
+```ts
+// stores/usersStore.ts
+import { createSharedState } from "overwatch-ts";
+
+createSharedState("users", []); // Initialize as empty
+````
+
+---
+
+### ② Create Async Middleware to Fetch Data
+> Global Middleware Example
+
+```ts
+import { applyMiddleware } from "overwatch-ts";
+
+// Async middleware pattern
+const fetchUsersMiddleware = async (_, next) => {
+  try {
+    const res = await fetch("https://overwatch/users");
+    const data = await res.json();
+
+    console.log("[Middleware] API data fetched");
+
+    next(data); // Update the store with fetched data
+  } catch (error) {
+    console.error("[Middleware] Failed to fetch users", error);
+    next([]); // Fallback
+  }
+};
+
+// Apply the middleware globally to the "users" state
+applyMiddleware("users", fetchUsersMiddleware);
+```
+
+---
+
+### ③ Use in Your Component
+
+Your component only **triggers the update**, and middleware handles fetching:
+
+```tsx
+"use client"
+
+import { useSharedState } from "overwatch-ts";
+
+export default function Users() {
+  const [users, setUsers] = useSharedState("users");
+
+  const handleLoadUsers = () => {
+    // This triggers the middleware to fetch and update users
+    setUsers([]); // The value passed here is ignored, middleware fetches and updates
+  };
+
+  return (
+    <div className="text-white p-4">
+      <h2 className="text-xl font-semibold mb-2">Users List</h2>
+      <button
+        onClick={handleLoadUsers}
+        className="bg-zinc-800 px-4 py-2 rounded hover:bg-zinc-700 mb-3"
+      >
+        Load Users
+      </button>
+
+      <ul className="space-y-1">
+        {users.length === 0 ? (
+          <p>No users loaded yet.</p>
+        ) : (
+          users.map((user) => (
+            <li key={user.id} className="bg-zinc-800 px-3 py-2 rounded">
+              {user.name} ({user.email})
+            </li>
+          ))
+        )}
+      </ul>
+    </div>
+  );
+}
+```
+
+---
+
+## Benefits
+
+- Centralized API handling, reducing component complexity.
+- Enables logging, validation, error handling in one place.
+- Supports **async data flows** without external libraries.
+- Retains Overwatch’s lightweight, minimalistic feel.
+
