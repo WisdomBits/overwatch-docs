@@ -23,9 +23,7 @@ const navbar = (
 )
 const footer = <Footer style={{display: "flex", alignItems: "center", gap: "0.5rem"}}> {new Date().getFullYear()} {`© Overwatch `} <p style={{fontSize: "10px"}} >{`- Developed by a dev for Developers `}<a href='https://github.com/karandeepsingh7070' target="_blank">Karandeep Singh</a></p></Footer>
  
-export default async function RootLayout({ children } : {
-  children : React.ReactNode
-}) {
+export default async function RootLayout({ children }) {
   return (
     <html
       // Not required, but good for SEO
