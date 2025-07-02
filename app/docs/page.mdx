@@ -16,13 +16,13 @@ Goal with OverWatch was to prioritize reusability, a positive developer experien
 
 ### Installation
 
-```bash
+```bash copy
 npm install overwatch-ts
 ````
 
 or with yarn:
 
-```bash
+```bash copy
 yarn add overwatch-ts
 ```
 
@@ -34,7 +34,7 @@ This function initializes a shared state value globally. While **optional**, it'
 
 > If `createSharedState` isn't used, `useSharedState` will automatically create the key the first time it's accessed, providing a flexible starting point.
 
-```ts
+```ts copy
 // Setting an initial theme
 createSharedState('theme', { mode: 'dark' });
 ```
@@ -44,7 +44,7 @@ createSharedState('theme', { mode: 'dark' });
 
 > Use this hook in any component to **read** and **update** your shared state. It's your primary interface for interacting with OverWatch.
 
-```ts
+```tsx copy
 import { useSharedState } from 'overwatch-ts'; 
 
 const ThemeSwitcher = () => {
@@ -68,7 +68,7 @@ const ThemeSwitcher = () => {
 
 > This hook allows you to extract only a specific part of a shared state object, which can help optimize component rendering by preventing unnecessary re-renders.
 
-```ts
+```tsx copy
 import { usePicker } from 'overwatch-ts'; 
 
 const ThemeIndicator = () => {

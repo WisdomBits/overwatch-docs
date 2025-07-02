@@ -12,8 +12,9 @@ export default withNextra({
       {
         source : "/",
         destination : "/docs",
-        permanent : true
+        permanent : true,
       }
     ]
-  }
+  },
+  defaultShowCopyCode: true
 })
