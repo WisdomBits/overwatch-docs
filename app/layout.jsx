@@ -2,12 +2,24 @@ import { Footer, Layout, Navbar } from 'nextra-theme-docs'
 import { Banner } from 'nextra/components'
 import { getPageMap } from 'nextra/page-map'
 import 'nextra-theme-docs/style.css'
-// import "./globals.css"n
  
 export const metadata = {
-  // Define your metadata here
-  // For more information on metadata API, see: https://nextjs.org/docs/app/building-your-application/optimizing/metadata
-}
+  metadataBase : new URL("https://docs.overwatchts.in/"),
+  title: {
+  default : "Overwatch Docs - developer-friendly state management library"},
+  description: "Overwatch Ts is a lightweight, fast, and developer-friendly state management library for React and Next.js, designed to simplify complex state without boilerplate.",
+  openGraph: {
+  title: "Overwatch Docs",
+  description: "Overwatch TS is a lightweight, fast, and developer-friendly state management library for React and Next.js, designed to simplify complex state without boilerplate.",
+  type : "website",
+  locale : "en_IN",
+  url : "https://docs.overwatchts.in/", 
+  siteName : "Overwatch Ts Docs"
+  },
+   icons: {
+        icon: './favicon.ico',
+      },
+};
  
 const banner = <Banner storageKey="some-key">What's New? Overwatch now supports SSR API's 🎉</Banner>
 const navbar = (
