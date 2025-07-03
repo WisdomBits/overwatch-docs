@@ -29,7 +29,7 @@ const navbar = (
     chatLink={"https://github.com/WisdomBits/overwatch"}
   />
 )
-const footer = <Footer style={{display: "flex", alignItems: "center", gap: "0.5rem"}}> {new Date().getFullYear()} {`© Overwatch Ts`} <p style={{fontSize: "10px"}} >{`- Developed by a dev for Developers `}<a href='https://github.com/karandeepsingh7070' target="_blank">Karandeep Singh</a></p></Footer>
+const footer = <Footer style={{display: "flex", alignItems: "center", gap: "0.5rem"}}> {new Date().getFullYear()} {`© Overwatch Ts`} <p style={{fontSize: "10px"}} >{`- Developed by a dev for Developers `}<a href='https://github.com/karandeepsingh7070' target="_blank">- Karandeep Singh</a></p></Footer>
  
 export default async function RootLayout({ children }) {
   return (
